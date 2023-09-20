@@ -1,0 +1,19 @@
+import /init.recovery.qcom_decrypt.rc
+
+on init
+    write /sys/class/backlight/panel0-backlight/brightness 200
+	setprop prepdecrypt.loglevel 2
+
+on fs
+    wait /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+
+on post-fs
+    start boot-hal-1-1
+
+on boot
+    start health-hal-2-1
+    # Hack to fix drm graphics init
+    wait /tmp/recovery.log
+    stop recovery
+    start recovery
