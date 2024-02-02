@@ -3,24 +3,30 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+DEVICE_PATH := device/lenovo/TB371FC
 
-# Enable updating of APEXes
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
+$(call inherit-product, vendor/lenovo/TB371FC/TB371FC-vendor.mk)
+
+# Installs gsi keys into ramdisk, to boot a GSI with verified boot.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 
 # Virtual A/B
-ENABLE_VIRTUAL_AB := true
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
 
 # Enable Dalvik
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
-DEVICE_PATH := device/lenovo/TB371FC
-
-#Suppot to compile recovery without msm headers
-TARGET_HAS_GENERIC_KERNEL_HEADERS := true
+# AAPT
+# Device uses high-density artwork where available
+PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xxxhdpi
+PRODUCT_AAPT_PREBUILT_DPI := xxxhdpi xxhdpi xhdpi hdpi
 
 # API
+BOARD_SHIPPING_API_LEVEL := 30
 PRODUCT_SHIPPING_API_LEVEL := 30
+PRODUCT_TARGET_VNDK_VERSION := $(PRODUCT_SHIPPING_API_LEVEL)
+PRODUCT_EXTRA_VNDK_VERSIONS := $(PRODUCT_SHIPPING_API_LEVEL)
 
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
@@ -56,8 +62,16 @@ PRODUCT_PACKAGES += \
     init.recovery.usb.rc \
     fstab.qcom.ramdisk
 
+# Dex
+PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := everything
+
+# Dynamic Partition
+PRODUCT_USE_DYNAMIC_PARTITIONS := true
+PRODUCT_BUILD_SUPER_PARTITION := false
+
 # fastbootd
 PRODUCT_PACKAGES += \
+    android.hardware.fastboot@1.0-impl-mock \
     fastbootd
 
 # F2FS utilities
@@ -86,12 +100,17 @@ PRODUCT_PACKAGES += \
 # Properties
 include $(LOCAL_PATH)/properties/default.mk
 
+# Remove packages
+PRODUCT_PACKAGES += \
+    RemovePackages
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH)
 
 # Update engine
 PRODUCT_PACKAGES += \
+    checkpoint_gc \
     otapreopt_script \
     update_engine \
     update_engine_sideload \
@@ -100,12 +119,35 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES_DEBUG += \
     update_engine_client
 
-PRODUCT_HOST_PACKAGES += \
-    brillo_update_payload
-
-# Vendor boot
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom
-
 # VNDK
 PRODUCT_TARGET_VNDK_VERSION := current
+
+
+PRODUCT_PACKAGES += \
+    PowerOffAlarm \
+    QtiTelephonyService \
+    atfwd \
+    dpmserviceapp \
+    ims \
+    qcrilmsgtunnel \
+    tcmclient \
+    com.qti.dpmframework \
+    com.quicinc.cne.api-V1.0-java \
+    com.quicinc.cne.api-V1.1-java \
+    com.quicinc.cne.constants-V1.0-java \
+    com.quicinc.cne.constants-V2.0-java \
+    com.quicinc.cne.constants-V2.1-java \
+    dpmapi \
+    qcrilhook \
+    vendor.qti.data.factory-V1.0-java \
+    vendor.qti.data.factory-V2.0-java \
+    vendor.qti.data.factory-V2.1-java \
+    vendor.qti.data.slm-V1.0-java \
+    vendor.qti.hardware.data.cne.internal.api-V1.0-java \
+    vendor.qti.hardware.data.cne.internal.constants-V1.0-java \
+    vendor.qti.hardware.data.cne.internal.server-V1.0-java \
+    vendor.qti.hardware.data.connection-V1.0-java \
+    vendor.qti.hardware.data.connection-V1.1-java \
+    vendor.qti.hardware.data.dynamicdds-V1.0-java \
+    vendor.qti.hardware.data.iwlan-V1.0-java \
+    vendor.qti.hardware.data.qmi-V1.0-java
