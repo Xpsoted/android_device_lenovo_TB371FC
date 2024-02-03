@@ -2,5 +2,4 @@
 # no longer has these directories
 type persist_file, file_type;
 
-# Default type for anything under /firmware.
-type firmware_file, fs_type, contextmount_type;
+type dsp_file, file_type;

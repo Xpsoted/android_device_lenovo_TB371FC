@@ -1,3 +1,5 @@
+DEVICE_PATH := device/lenovo/TB371FC
+
 # Configure core_64_bit.mk
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
@@ -21,8 +23,6 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
 # Inherit device configurations
 $(call inherit-product, $(DEVICE_PATH)/device.mk)
-
-DEVICE_PATH := device/lenovo/TB371FC
 
 PRODUCT_BRAND := lenovo
 PRODUCT_DEVICE := TB371FC

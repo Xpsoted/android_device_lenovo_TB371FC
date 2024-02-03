@@ -6,21 +6,23 @@
 DEVICE_PATH := device/lenovo/TB371FC
 
 # SHIPPING API
-PRODUCT_SHIPPING_API_LEVEL := 33
+PRODUCT_SHIPPING_API_LEVEL := 30
 
 # VNDK API
-PRODUCT_TARGET_VNDK_VERSION := 33
+PRODUCT_TARGET_VNDK_VERSION := 30
 
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
     POSTINSTALL_PATH_system=system/bin/otapreopt_script \
-    FILESYSTEM_TYPE_system=ext4 \
+    FILESYSTEM_TYPE_system=erofs \
     POSTINSTALL_OPTIONAL_system=true
 
-# Audio
-PRODUCT_PACKAGES += \
-    libaacwrapper
+AB_OTA_POSTINSTALL_CONFIG += \
+    RUN_POSTINSTALL_vendor=true \
+    POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
+    FILESYSTEM_TYPE_vendor=erofs \
+    POSTINSTALL_OPTIONAL_vendor=true
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio/audio_policy_configuration.xml \
@@ -34,7 +36,6 @@ TARGET_SCREEN_WIDTH := 2944
 PRODUCT_PACKAGES += \
     android.hardware.boot@1.1-impl-qti \
     android.hardware.boot@1.1-impl-qti.recovery \
-    bootctrl.kona.recovery
 
 PRODUCT_PACKAGES_DEBUG += \
     bootctl
@@ -61,11 +62,6 @@ PRODUCT_PACKAGES += \
     f2fs_io \
     check_f2fs
 
-# HIDL
-PRODUCT_PACKAGES += \
-    android.hidl.base@1.0 \
-    android.hidl.manager@1.0 \
-    android.hidl.base@1.0.vendor 
 # Kernel
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/prebuilt/dtb.img:dtb.img
@@ -74,16 +70,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_BUILD_SUPER_PARTITION := false
 
-# Perf
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.perf@2.2
-
 # Properties
 include $(LOCAL_PATH)/properties/default.mk
-
-# Remove packages
-PRODUCT_PACKAGES += \
-    RemovePackages
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
