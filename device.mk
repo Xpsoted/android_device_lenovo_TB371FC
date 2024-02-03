@@ -5,20 +5,11 @@
 #
 DEVICE_PATH := device/lenovo/TB371FC
 
-# Installs gsi keys into ramdisk, to boot a GSI with verified boot.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
+# SHIPPING API
+PRODUCT_SHIPPING_API_LEVEL := 33
 
-# Virtual A/B
-$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
-
-# Enable Dalvik
-$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
-
-# AAPT
-# Device uses high-density artwork where available
-PRODUCT_AAPT_CONFIG := normal
-PRODUCT_AAPT_PREF_CONFIG := xxxhdpi
-PRODUCT_AAPT_PREBUILT_DPI := xxxhdpi xxhdpi xhdpi hdpi
+# VNDK API
+PRODUCT_TARGET_VNDK_VERSION := 33
 
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
@@ -52,7 +43,8 @@ PRODUCT_PACKAGES_DEBUG += \
 PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
     init.recovery.usb.rc \
-    fstab.qcom.ramdisk
+    fstab.qcom.ramdisk \
+    set_permissive.sh
 
 # Dynamic Partition
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
@@ -86,6 +78,9 @@ PRODUCT_BUILD_SUPER_PARTITION := false
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.perf@2.2
 
+# Properties
+include $(LOCAL_PATH)/properties/default.mk
+
 # Remove packages
 PRODUCT_PACKAGES += \
     RemovePackages
@@ -107,9 +102,4 @@ PRODUCT_PACKAGES_DEBUG += \
 
 # VNDK
 PRODUCT_TARGET_VNDK_VERSION := current
-PRODUCT_EXTRA_VNDK_VERSIONS := \
-    28 \
-    29 \
-    30 \
-    31 \
-    32
+PRODUCT_EXTRA_VNDK_VERSIONS := 30
