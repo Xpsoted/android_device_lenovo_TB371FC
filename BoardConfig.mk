@@ -23,7 +23,6 @@ AB_OTA_PARTITIONS += \
     vbmeta \
     vbmeta_system \
     vendor
-BOARD_USES_RECOVERY_AS_BOOT := false
 
 # Architecture
 TARGET_ARCH := arm64
