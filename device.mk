@@ -17,7 +17,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 DEVICE_PATH := device/lenovo/TB371FC
 
 # SHIPPING API
-PRODUCT_SHIPPING_API_LEVEL := 30
+PRODUCT_SHIPPING_API_LEVEL :=33
 
 # VNDK API
 PRODUCT_TARGET_VNDK_VERSION := 30
